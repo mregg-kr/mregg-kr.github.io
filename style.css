@@ -1,0 +1,413 @@
+/* Modern CSS Reset & Variable Definitions */
+:root {
+    --bg-dark: #0a0a0b;
+    --panel-bg-normal: rgba(16, 16, 18, 0.85);
+    --panel-bg-hover: rgba(24, 24, 27, 0.4);
+    --border-color: rgba(255, 255, 255, 0.05);
+    --border-color-hover: rgba(255, 255, 255, 0.15);
+    --text-primary: #f4f4f5;
+    --text-secondary: #a1a1aa;
+    --text-muted: #52525b;
+    --glow-color: rgba(255, 255, 255, 0.05);
+    --glow-color-active: rgba(255, 255, 255, 0.12);
+    --font-sans: 'Outfit', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --transition-speed: 0.75s;
+    --transition-curve: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: var(--bg-dark);
+    color: var(--text-primary);
+    font-family: var(--font-sans);
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+    position: relative;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Ambient glow blob following the mouse */
+.glow-bg {
+    position: fixed;
+    width: 800px;
+    height: 800px;
+    background: radial-gradient(circle, var(--glow-color-active) 0%, rgba(255, 255, 255, 0) 65%);
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    z-index: 0;
+    mix-blend-mode: screen;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    transition: opacity 1.5s var(--transition-curve);
+    will-change: transform, opacity;
+}
+
+body.mouse-moved .glow-bg {
+    opacity: 1;
+}
+
+/* Elegant mesh grid overlay */
+.mesh-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+    background-image: 
+        linear-gradient(rgba(255, 255, 255, 0.01) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.01) 1px, transparent 1px);
+    background-size: 50px 50px;
+    background-position: center;
+}
+
+/* Main application layout wrapper */
+.app-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    z-index: 2;
+}
+
+/* (Header styling removed) */
+
+/* Split panel container */
+.split-container {
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+    z-index: 3;
+}
+
+/* Individual Panel */
+.panel {
+    flex: 1;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    cursor: pointer;
+    border-right: 1px solid var(--border-color);
+    transition: flex var(--transition-speed) var(--transition-curve);
+}
+
+.panel:last-child {
+    border-right: none;
+}
+
+/* Dark backdrop of each panel */
+.panel-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(180deg, rgba(16, 16, 18, 0.95) 0%, rgba(10, 10, 11, 0.98) 100%);
+    z-index: 1;
+    transition: opacity var(--transition-speed) var(--transition-curve),
+                transform var(--transition-speed) var(--transition-curve);
+}
+
+/* Panel decorative Index Number */
+.panel-number {
+    position: absolute;
+    top: 120px;
+    left: 45px;
+    font-size: 1.1rem;
+    font-weight: 300;
+    color: var(--text-muted);
+    letter-spacing: 0.1em;
+    z-index: 5;
+    transition: color 0.5s var(--transition-curve), transform 0.5s var(--transition-curve);
+}
+
+/* Panel content core wrapper */
+.panel-content {
+    position: relative;
+    width: 80%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 5;
+}
+
+/* The giant center character */
+.panel-letter {
+    font-size: clamp(6rem, 15vw, 15rem);
+    font-weight: 900;
+    color: rgba(255, 255, 255, 0.12);
+    margin: 0;
+    user-select: none;
+    transition: all var(--transition-speed) var(--transition-curve);
+    transform-origin: center center;
+}
+
+/* Floating staggered animations for characters */
+#panel-jon .panel-letter {
+    animation: float 6s ease-in-out infinite;
+}
+
+#panel-beo .panel-letter {
+    animation: float 6s ease-in-out infinite;
+    animation-delay: 2s;
+}
+
+#panel-excl .panel-letter {
+    animation: float 6s ease-in-out infinite;
+    animation-delay: 4s;
+}
+
+/* Text descriptions that slide up */
+.panel-info {
+    position: absolute;
+    bottom: 12%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.6s var(--transition-curve),
+                transform 0.6s var(--transition-curve);
+    pointer-events: none;
+}
+
+.panel-subtitle {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 12px;
+    letter-spacing: 0.05em;
+    position: relative;
+}
+
+.panel-subtitle::after {
+    content: '';
+    position: absolute;
+    bottom: -6px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 24px;
+    height: 2px;
+    background-color: var(--text-primary);
+    opacity: 0.4;
+    transition: width 0.4s var(--transition-curve);
+}
+
+.panel-desc {
+    font-size: 0.9rem;
+    line-height: 1.7;
+    color: var(--text-secondary);
+    max-width: 290px;
+    font-weight: 300;
+    word-break: keep-all;
+}
+
+/* Hover Interactive Mechanics */
+.split-container:hover .panel {
+    flex: 0.65;
+}
+
+.split-container .panel:hover {
+    flex: 1.7;
+}
+
+.split-container .panel:hover .panel-background {
+    opacity: 0.75;
+    background: linear-gradient(180deg, rgba(20, 20, 22, 0.75) 0%, rgba(13, 13, 15, 0.85) 100%);
+}
+
+.split-container .panel:hover .panel-number {
+    color: var(--text-primary);
+    transform: translate(-5px, -5px);
+}
+
+.split-container .panel:hover .panel-letter {
+    color: var(--text-primary);
+    text-shadow: 
+        0 0 30px rgba(255, 255, 255, 0.15),
+        0 0 60px rgba(255, 255, 255, 0.05);
+    transform: scale(1.1) translateY(-25px);
+    animation-play-state: paused;
+}
+
+/* Specific Accent for the exclamation mark */
+#panel-excl:hover .panel-letter {
+    color: #ffffff;
+    text-shadow: 
+        0 0 30px rgba(255, 255, 255, 0.35),
+        0 0 70px rgba(255, 255, 255, 0.15);
+}
+
+.split-container .panel:hover .panel-info {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0.15s;
+}
+
+.split-container .panel:hover .panel-subtitle::after {
+    width: 45px;
+}
+
+/* Footer Styling */
+.profile-footer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 30px 40px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    z-index: 10;
+    pointer-events: none;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    letter-spacing: 0.15em;
+    font-weight: 400;
+}
+
+.footer-separator {
+    width: 40px;
+    height: 1px;
+    background-color: var(--border-color);
+    margin: 0 20px;
+}
+
+/* Animations */
+@keyframes float {
+    0% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-12px);
+    }
+    100% {
+        transform: translateY(0px);
+    }
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        opacity: 0.6;
+        box-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+    }
+    100% {
+        transform: scale(1.2);
+        opacity: 1;
+        box-shadow: 0 0 16px rgba(255, 255, 255, 0.9);
+    }
+}
+
+/* Responsive Styles (Tablets & Mobiles) */
+@media (max-width: 768px) {
+    body {
+        overflow-y: auto;
+    }
+    
+    .app-container {
+        height: auto;
+        min-height: 100vh;
+    }
+
+    /* (Profile header mobile styling removed) */
+
+    .split-container {
+        flex-direction: column;
+        height: auto;
+        min-height: 100vh;
+        padding-top: 0;
+        padding-bottom: 60px;
+    }
+
+    .panel {
+        flex: none;
+        width: 100%;
+        height: 33.33vh;
+        min-height: 260px;
+        border-right: none;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .panel:last-child {
+        border-bottom: none;
+    }
+
+    .panel-number {
+        top: 25px;
+        left: 30px;
+        font-size: 0.9rem;
+    }
+
+    .panel-letter {
+        font-size: clamp(4.5rem, 10vh, 7.5rem);
+    }
+
+    .panel-info {
+        bottom: 8%;
+    }
+
+    .panel-subtitle {
+        font-size: 1.15rem;
+        margin-bottom: 6px;
+    }
+
+    .panel-desc {
+        font-size: 0.8rem;
+        max-width: 320px;
+        line-height: 1.5;
+    }
+
+    /* Adjust hover effect on mobile to click/active emulation */
+    .split-container:hover .panel {
+        flex: none;
+    }
+
+    .split-container .panel:hover {
+        flex: none;
+    }
+
+    /* Allow touch devices to show details when active */
+    .panel.active .panel-background {
+        opacity: 0.75;
+    }
+    
+    .panel.active .panel-letter {
+        color: var(--text-primary);
+        transform: scale(1.05) translateY(-15px);
+    }
+
+    .panel.active .panel-info {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .profile-footer {
+        position: relative;
+        padding: 25px;
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+        border-top: 1px solid var(--border-color);
+        background-color: #0d0d0e;
+    }
+
+    .footer-separator {
+        display: none;
+    }
+}
